@@ -48,19 +48,36 @@
       font-weight: bold;
     }
     .rsvp {
+      margin-top: 30px;
+    }
+    .rsvp button {
+      background-color: #7b1c1c;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+    .rsvp button:hover {
+      background-color: #a22b2b;
+    }
+    #response {
       margin-top: 20px;
-      font-style: italic;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <p class="small">Dear friend, you’re invited to</p>
+    <p class="small">Dear friend, you are invited to</p>
     <h1>Birthday</h1>
     <h2>Dinner</h2>
 
     <div class="section">
-      <p>Hosted by: <br><b>Aigerim</b></p>
+      <p>Hosted by:<br><b>Aigerim</b></p>
     </div>
 
     <div class="section">
@@ -69,43 +86,44 @@
       <p>Start at 19:00 <br> Six Coffee + Wine, Astana</p>
     </div>
 
-<div class="rsvp">
-  <h3>Придёшь на мой день рождения?</h3>
-  <form action="https://formspree.io/f/xanbgbrb" method="POST">
-    <label>
-      Имя:
-      <input type="text" name="name" placeholder="Ваше имя" required>
-    </label>
-    <br><br>
-    <button type="submit" name="attendance" value="yes"> Да</button>
-    <button type="submit" name="attendance" value="no">Нет</button>
-  </form>
-</div>
+    <div class="rsvp">
+      <h3>RSVP</h3>
+      <p>Will you come to my birthday?</p>
 
-<style>
-  .rsvp input {
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-  }
-  .rsvp button {
-    background-color: #7b1c1c;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    margin: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s;
-  }
-  .rsvp button:hover {
-    background-color: #a22b2b;
-  }
-</style>
+      <form id="rsvpForm">
+        <input type="text" name="name" placeholder="Your name" required style="padding:10px; border:1px solid #ccc; border-radius:6px;">
+        <br><br>
+        <button type="submit" name="attendance" value="yes">Yes</button>
+        <button type="submit" name="attendance" value="no">No</button>
+      </form>
 
+      <p id="response"></p>
+    </div>
   </div>
+
+  <script>
+    document.querySelectorAll('#rsvpForm button').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        let form = document.getElementById('rsvpForm');
+        let formData = new FormData(form);
+        formData.set('attendance', this.value);
+
+        fetch("https://formspree.io/f/yourID", {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        }).then(response => {
+          document.getElementById("response").innerText =
+            this.value === "yes"
+            ? "Thank you for confirming your attendance."
+            : "Thank you for your reply.";
+        }).catch(error => {
+          document.getElementById("response").innerText = "Error. Please try again.";
+        });
+      });
+    });
+  </script>
 </body>
 </html>
